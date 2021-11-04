@@ -1,0 +1,5 @@
+.button-style{
+    background: linear-gradient(to right, #18d2b1, #0fcfea);
+    text-transform: capitalize;
+    color: #fff !important;
+}
