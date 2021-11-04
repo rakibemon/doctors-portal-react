@@ -29,9 +29,9 @@ const Testimonial = () => {
         <Container>
             <Grid container spacing={4} sx={{mt:3}}>
                 {
-                    testimonials.map(testimonial => {
+                    testimonials.map((testimonial,index) => {
                         return(
-                            <Grid item xs={12} md={6} lg={4}>
+                            <Grid item xs={12} md={6} lg={4} key={index}>
                                 <Paper elevation={3} sx={{px:4, pt:4}}>
                                     <Typography variant='body1'>{testimonial?.description}</Typography>
                                     <div style={{display:'flex', marginTop:'20px'}}>
