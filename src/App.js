@@ -4,13 +4,16 @@ import Appointment from './Pages/Appoinment/Appointment';
 import AuthProvider from './Pages/Context/AuthProvider';
 import Home from './Pages/Home/Home/Home';
 import Login from './Pages/Login/Login/Login';
+import PrivateRoute from './Pages/Login/PrivateRoute/PrivateRoute';
 import Register from './Pages/Login/Register/Register';
+import Navigation from './Pages/Shared/Navigation/Navigation';
 
 function App() {
   return (
     <div className="App">
       <AuthProvider>
         <Router>
+          <Navigation/>
           <Switch>
             <Route exact path='/'>
               <Home></Home>
@@ -24,9 +27,9 @@ function App() {
             <Route exact path='/reg'>
               <Register></Register>
             </Route>
-            <Route exact path='/appointment'>
+            <PrivateRoute exact path='/appointment'>
               <Appointment></Appointment>
-            </Route>
+            </PrivateRoute>
           </Switch>
         </Router>
       </AuthProvider>
