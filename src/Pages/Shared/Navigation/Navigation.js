@@ -36,7 +36,11 @@ const Navigation = () => {
           <Link to='/appointment'><Button color="inherit">Appointment</Button></Link>
           {
             user.email || user.displayName ?
-            <Button onClick={handleLogOut} className='button-style' color="inherit">Logout</Button>:
+            <Box>
+              <NavLink to='/dashboard'><Button className='button-style' color="inherit">DashBoard</Button></NavLink>
+              <Button onClick={handleLogOut} className='button-style' color="inherit">Logout</Button>
+            </Box>
+            :
             <NavLink to='/login'><Button className='button-style' color="inherit">Login</Button></NavLink>
           }
         </Toolbar>

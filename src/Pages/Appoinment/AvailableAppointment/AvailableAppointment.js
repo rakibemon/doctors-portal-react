@@ -40,13 +40,13 @@ const bookings = [
         space: 10,
     },
 ]
-const AvailableAppointment = ({date}) => {
+const AvailableAppointment = ({date,setDataAcknowledged}) => {
     return (
         <Container>
             <Typography variant='h4' sx={{color:'#1cc7c1', fontWeight:'500', mb:4}}>Appointments available on {date.toDateString()}</Typography>
             <Grid container spacing={4}>
                 {
-                    bookings.map(booking => <Booking key={booking.id} booking={booking} date={date}></Booking>)
+                    bookings.map(booking => <Booking key={booking.id} setDataAcknowledged={setDataAcknowledged} booking={booking} date={date}></Booking>)
                 }
             </Grid>
         </Container>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword,updateProfile, signOut } from 'firebase/auth';
 import FirebaseInitialize from '../Login/firebase/firebase.init';
+import axios from 'axios';
 const googleProvider = new GoogleAuthProvider();
 FirebaseInitialize();
 const useFirebase = () => {
@@ -8,11 +9,38 @@ const useFirebase = () => {
 
   const [user, setUser] = useState({});
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
+  const [admin, setAdmin] = useState(false)
 
-  const emailRegister = (email, password) => {
+  const emailRegister = (email, password, name, history) => {
     setIsLoading(true)
-    return createUserWithEmailAndPassword(auth, email, password)
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      setError('');
+      const newUser = {email,  displayName: name}
+      setUser(newUser);
+
+      // send user to the Database
+      saveUser(email, name)
+
+      //send name to firebase after creation
+
+      updateProfile(auth.currentUser, {
+        displayName: name //dirct to ekanei amra set kre dissi name ta tahle 18 no line e kn declear krsi ?
+      }).then(() => {
+        // Profile updated!
+      }).catch((error) => {
+        setError(error.message)
+      });
+      
+      history.replace('/home')
+      })
+    .catch((error) => {
+      setError(error.message)
+    })
+    .finally(()=>{
+        setIsLoading(false)
+    })
   };
   const googleSignIn = () => {
     setIsLoading(true)
@@ -35,7 +63,15 @@ const useFirebase = () => {
       setIsLoading(false)
     });
     return () => unsubscribe;
-  }, [auth])
+  }, [auth]);
+
+  // for admin check
+  useEffect(()=>{
+    axios.get(`http://localhost:5000/users/${user?.email}`)
+    .then(data => {
+      setAdmin(data?.data?.admin)
+    })
+  },[user?.email])
 
   const logOut = () => {
     setIsLoading(true)
@@ -47,14 +83,32 @@ const useFirebase = () => {
       .finally(() => {
         setIsLoading(false)
       })
-  }
+  };
+
+
+  const saveUser = (email,displayName) =>{
+    const user = {email, displayName} // email:email and email same jinis property and value name same
+    axios.post('http://localhost:5000/users', user)
+    .then(data => console.log(data.data)
+    );
+  };
+
+
+  const googleSaveUser = (email,displayName) =>{
+    const user = {email, displayName} // email:email and email same jinis property and value name same
+    axios.put('http://localhost:5000/users', user)
+    .then(data => console.log(data.data)
+    );
+  };
   return {
     user,
     setUser,
     error,
+    admin,
     setError,
     emailRegister,
     isLoading,
+    googleSaveUser,
     setIsLoading,
     loginWithEmail,
     googleSignIn,

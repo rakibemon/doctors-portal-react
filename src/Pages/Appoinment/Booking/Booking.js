@@ -3,7 +3,7 @@ import React from 'react';
 import BookingModal from '../BookingModal/BookingModal';
 import './Booking.css'
 
-const Booking = ({ booking,date }) => {
+const Booking = ({ booking,date,setDataAcknowledged }) => {
     const { name, time, space } = booking || {};
     const [openBooking, setOpenBooking] = React.useState(false);
     const handleBookingOpen = () => setOpenBooking(true);
@@ -25,7 +25,7 @@ const Booking = ({ booking,date }) => {
                 <Button onClick={handleBookingOpen} className='button-style' variant='contained'>Book Appoinment</Button>
             </Paper>
         </Grid>
-        <BookingModal booking={booking} date={date} openBooking={openBooking} handleBookingClose={handleBookingClose}></BookingModal>
+        <BookingModal setDataAcknowledged={setDataAcknowledged} booking={booking} date={date} openBooking={openBooking} handleBookingClose={handleBookingClose}></BookingModal>
         </>
     );
 };

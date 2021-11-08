@@ -6,7 +6,7 @@ import login from '../../../images/login.png';
 import { NavLink } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 const Login = () => {
-    const {user, error, googleSignIn, loginWithEmail, setUser, setError, isLoading, setIsLoading } = useAuth();
+    const {user, error, googleSignIn, loginWithEmail, setUser, setError, isLoading, setIsLoading,googleSaveUser } = useAuth();
     const history = useHistory();
     const location = useLocation();
     const redirect_uri = location?.state?.from || '/home';
@@ -27,7 +27,9 @@ const Login = () => {
     const handleGoogleLogin = () => {
         googleSignIn()
             .then(result => {
-                setUser(result.user);
+                const user = result.user
+                setUser(user);
+                googleSaveUser(user.email , user.displayName)
                 setError('');
                 history.push(redirect_uri);
 
@@ -50,7 +52,7 @@ const Login = () => {
                         <Button sx={{ width: '75%', mt: 3 }} variant='contained' type="submit" className='button-style'>Login</Button>
                         <NavLink style={{ textDecoration: 'none', textTransform: 'capitalize' }} to='/reg'><Button variant='text' sx={{ textTransform: 'capitalize', mt: 3 }}>New User? Please Register</Button></NavLink>
                     </form>}
-                    <Button onClick={handleGoogleLogin} variant='text' sx={{ textTransform: 'capitalize', mt: 3 }}>Google Log in</Button>
+                    <Button onClick={handleGoogleLogin} className='button-style' variant='contained' sx={{ textTransform: 'capitalize', mt: 3 }}>Google Log in</Button>
                     { isLoading &&
                     <CircularProgress color="secondary" />
                     }

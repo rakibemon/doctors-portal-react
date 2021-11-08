@@ -6,8 +6,9 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import { Button} from '@mui/material';
+import {Button}  from '@mui/material';
 import axios from 'axios';
+import useAuth from '../../hooks/useAuth';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -19,20 +20,28 @@ const style = {
     boxShadow: 24,
     p: 4,
 };
-const BookingModal = ({ openBooking, handleBookingClose, booking,date }) => {
+const BookingModal = ({ openBooking, handleBookingClose, booking, date, setDataAcknowledged }) => {
+
+
     const { name, time } = booking || {};
+    const { user } = useAuth()
     const { register, reset, handleSubmit, formState: { errors } } = useForm();
-    const onSubmit = data => {
+    const onSubmit = (data,newState) => {
         console.log(data);
+        data.time = time;
+        data.date = date.toLocaleDateString();
+        data.serviceName = name;
         axios.post('http://localhost:5000/patientinfo', data)
-        .then(data => {
-            if(data){
-                alert("Booking successful");
-            }
-        })
+            .then(data => {
+                if (data) {
+                    setDataAcknowledged(true);
+                    handleBookingClose();
+                }
+            })
         reset();
-        handleBookingClose();
     };
+
+
     return (
         <div>
             <Modal
@@ -59,15 +68,17 @@ const BookingModal = ({ openBooking, handleBookingClose, booking,date }) => {
                                     maxWidth: '100%',
                                 }}
                             >
-                                <TextField {...register("time")} value={time.toString()} fullWidth label="Time" id="fullWidth" />
-                                <TextField {...register("name")} sx={{ my: 3 }} fullWidth label="Name" id="fullWidth" />
-                                <TextField {...register("email")} fullWidth label="Email" id="fullWidth" />
+                                <TextField disabled value={time.toString()} fullWidth label="Time" id="fullWidth" />
+                                <TextField {...register("name")} sx={{ my: 3 }} fullWidth label='Name' defaultValue={user?.displayName} id="fullWidth" />
+                                <TextField {...register("email")} fullWidth defaultValue={user?.email} id="fullWidth" />
                                 <TextField {...register("phone")} sx={{ my: 3 }} fullWidth label="Phone" id="fullWidth" />
-                                <TextField {...register("date")} value={date.toDateString()} fullWidth label="Date" id="fullWidth" />
+                                <TextField disabled value={date.toDateString()} fullWidth label="Date" id="fullWidth" />
                             </Box>
                             {errors.exampleRequired && <span>This field is required</span>}
 
-                            <Button sx={{ float: 'right', py: 1, px: 6 }} type="submit" className='button-style'>Send</Button>
+                            <Button sx={{ float: 'right', py: 1, px: 6 , cursor:'pointer'}} type="submit" className='button-style'>
+                                Send
+                            </Button>
                         </Box>
                     </form>
                 </Fade>
