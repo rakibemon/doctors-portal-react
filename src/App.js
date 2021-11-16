@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Appointment from './Pages/Appoinment/Appointment';
 import AuthProvider from './Pages/Context/AuthProvider';
@@ -8,40 +8,57 @@ import Login from './Pages/Login/Login/Login';
 import PrivateRoute from './Pages/Login/PrivateRoute/PrivateRoute';
 import Register from './Pages/Login/Register/Register';
 import Navigation from './Pages/Shared/Navigation/Navigation';
+import AdminRoute from './Pages/Login/AdminRoute/AdminRoute';
+import MakeAdmin from './Pages/Dashboard/MakeAdmin/MakeAdmin';
+import AddDoctor from './Pages/Dashboard/AddDoctor/AddDoctor';
+import Payment from './Pages/Dashboard/Payment/Payment';
+import DashBoardHome from './Pages/Dashboard/DashBoardHome/DashBoardHome';
 
 function App() {
   return (
     <div className="App">
       <AuthProvider>
         <Router>
-          <Switch>
-            <Route exact path='/'>
-            <Navigation/>
-              <Home></Home>
+          <Navigation />
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/home' element={<Home />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/reg' element={<Register />} />
+            <Route path='/appointment' element={
+              <PrivateRoute>
+                <Appointment />
+              </PrivateRoute>}>
             </Route>
-            <Route exact path='/home'>
-            <Navigation/>
-              <Home></Home>
+
+            <Route path='/dashboard/*' element={
+              <PrivateRoute>
+                <DashBoard />
+              </PrivateRoute>}>
+
+              <Route path='*' element={<DashBoardHome />}>
+              </Route>
+
+              <Route path='payment/:appointmentId' element={<Payment />}>
+              </Route>
+
+              <Route path='makeAdmin' element={
+                <AdminRoute>
+                  <MakeAdmin />
+                </AdminRoute>}>
+              </Route>
+
+              <Route path='addDoctor'
+                element={
+                  <AdminRoute>
+                    <AddDoctor />
+                  </AdminRoute>}>
+              </Route>
             </Route>
-            <Route exact path='/login'>
-            <Navigation/>
-              <Login></Login>
-            </Route>
-            <Route exact path='/reg'>
-            <Navigation/>
-              <Register></Register>
-            </Route>
-            <PrivateRoute exact path='/appointment'>
-            <Navigation/>
-              <Appointment></Appointment>
-            </PrivateRoute>
-            <PrivateRoute path='/dashboard'>
-              <DashBoard></DashBoard>
-            </PrivateRoute>
-          </Switch>
+          </Routes>
         </Router>
       </AuthProvider>
-    </div>
+    </div >
   );
 }
 

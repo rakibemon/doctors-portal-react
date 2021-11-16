@@ -13,7 +13,7 @@ const useFirebase = () => {
   const [admin, setAdmin] = useState(false);
   const [token, setToken] = useState('')
 
-  const emailRegister = (email, password, name, history) => {
+  const emailRegister = (email, password, name, navigate) => {
     setIsLoading(true)
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
@@ -34,7 +34,7 @@ const useFirebase = () => {
         setError(error.message)
       });
       
-      history.replace('/home')
+      navigate('/home')
       })
     .catch((error) => {
       setError(error.message)

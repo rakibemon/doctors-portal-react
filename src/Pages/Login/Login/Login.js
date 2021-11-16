@@ -1,13 +1,13 @@
 import { Alert, Button, CircularProgress, Container, Grid, TextField } from '@mui/material';
 import { useForm } from "react-hook-form";
 import React from 'react';
-import { useHistory, useLocation } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import login from '../../../images/login.png';
 import { NavLink } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 const Login = () => {
     const {user, error, googleSignIn, loginWithEmail, setUser, setError, isLoading, setIsLoading,googleSaveUser } = useAuth();
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation();
     const redirect_uri = location?.state?.from || '/home';
     const { register, reset, handleSubmit, formState: { errors } } = useForm();
@@ -16,7 +16,7 @@ const Login = () => {
             .then((userCredential) => {
                 setUser(userCredential.user);
                 setError('');
-                history.push(redirect_uri);
+                navigate(redirect_uri);
             })
             .catch((error) => {
                 setError(error.message)
@@ -31,7 +31,7 @@ const Login = () => {
                 setUser(user);
                 googleSaveUser(user.email , user.displayName)
                 setError('');
-                history.push(redirect_uri);
+                navigate(redirect_uri);
 
             })
             .catch(error => {
