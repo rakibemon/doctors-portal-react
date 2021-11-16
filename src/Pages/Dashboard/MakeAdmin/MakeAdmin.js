@@ -1,24 +1,31 @@
 import { Alert, Button, TextField } from '@mui/material';
-import axios from 'axios';
 import React, { useState } from 'react';
+import useAuth from '../../hooks/useAuth';
 
 const MakeAdmin = () => {
     const [email,setEmail] = useState('');
-    const [success, setSuccess]=useState(false)
+    const [success, setSuccess]=useState(false);
+    const {token} = useAuth();
     const handleOnBlur = (event) =>{
         setEmail(event.target.value)
     }
     const handleAdminSubmit = event =>{
         const user = {email:email}
-        axios.put('http://localhost:5000/users/admin', user)
-        .then(data => {
-            console.log(data)
-            if(data.data.modifiedCount){
+        fetch('http://localhost:5000/users/admin',{
+            method:"PUT",
+            headers:{
+                'authorization' : `Bearer ${token}`,
+                'Content-Type' : 'application/json'
+            },
+            body:JSON.stringify(user)
+        })
+        .then(res=> res.json())
+        .then(data =>{
+            if(data.modifiedCount){
                 setEmail('')
                 setSuccess(true)
             }
-        }
-        )
+        })
         event.preventDefault();
     }
     return (

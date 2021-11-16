@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword,updateProfile, signOut } from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword,updateProfile, getIdToken,signOut } from 'firebase/auth';
 import FirebaseInitialize from '../Login/firebase/firebase.init';
 import axios from 'axios';
 const googleProvider = new GoogleAuthProvider();
@@ -10,7 +10,8 @@ const useFirebase = () => {
   const [user, setUser] = useState({});
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [admin, setAdmin] = useState(false)
+  const [admin, setAdmin] = useState(false);
+  const [token, setToken] = useState('')
 
   const emailRegister = (email, password, name, history) => {
     setIsLoading(true)
@@ -55,8 +56,13 @@ const useFirebase = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUser(user)
-        setError('')
+        setUser(user);
+        setError('');
+        getIdToken(user)
+        .then(idToken=>{
+          setToken(idToken);
+          
+        })
       } else {
         setUser({})
       }
@@ -89,7 +95,9 @@ const useFirebase = () => {
   const saveUser = (email,displayName) =>{
     const user = {email, displayName} // email:email and email same jinis property and value name same
     axios.post('http://localhost:5000/users', user)
-    .then(data => console.log(data.data)
+    .then(data => {
+      // Save user to DB
+    }
     );
   };
 
@@ -104,8 +112,9 @@ const useFirebase = () => {
     user,
     setUser,
     error,
-    admin,
     setError,
+    admin,
+    token,
     emailRegister,
     isLoading,
     googleSaveUser,

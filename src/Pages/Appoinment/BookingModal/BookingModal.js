@@ -23,12 +23,12 @@ const style = {
 const BookingModal = ({ openBooking, handleBookingClose, booking, date, setDataAcknowledged }) => {
 
 
-    const { name, time } = booking || {};
+    const { name, time, price } = booking || {};
     const { user } = useAuth()
     const { register, reset, handleSubmit, formState: { errors } } = useForm();
     const onSubmit = (data,newState) => {
-        console.log(data);
         data.time = time;
+        data.price = price;
         data.date = date.toLocaleDateString();
         data.serviceName = name;
         axios.post('http://localhost:5000/patientinfo', data)

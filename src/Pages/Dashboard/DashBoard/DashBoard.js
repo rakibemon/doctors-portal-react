@@ -29,6 +29,7 @@ import MakeAdmin from '../MakeAdmin/MakeAdmin';
 import AddDoctor from '../AddDoctor/AddDoctor';
 import useAuth from '../../hooks/useAuth';
 import AdminRoute from '../../Login/AdminRoute/AdminRoute';
+import Payment from '../Payment/Payment';
 
 const drawerWidth = 200;
 
@@ -139,6 +140,9 @@ function DashBoard(props) {
         <Switch>
           <Route exact path={path}>
             <DashBoardHome></DashBoardHome>
+          </Route>
+          <Route path={`${path}/payment/:appointmentId`}>
+            <Payment></Payment>
           </Route>
           <AdminRoute exact path={`${path}/makeAdmin`}>
             <MakeAdmin></MakeAdmin>
